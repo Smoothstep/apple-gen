@@ -1,8 +1,0 @@
-﻿build/
-out/
-**/target/
-.vscode/
-.vs
-.cache
-CMakeSettings.json
-.*
