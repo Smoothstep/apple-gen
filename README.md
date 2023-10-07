@@ -39,3 +39,7 @@ Encrypted values for those keys are generated in apple's closed-source XNU kerne
 - GCC (>= 11)
 
 Build toolsets: Ninja, make, Visual Studio.
+
+# References
+
+https://github.com/beeper/pypush
