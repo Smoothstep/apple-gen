@@ -1093,7 +1093,7 @@ extern "C"
     if (!X)                                                                                        \
         return NAC_INVALID_PARAMETER;
 
-#define COPY_PARAM(X, Y) std::memcpy(X, Y, std::min(std::strlen(Y), sizeof(Y)))
+#define COPY_PARAM(X, Y) std::memcpy(X, Y, std::min(std::strlen(Y), sizeof(X)))
 
     EXPORT_CRYPT NacError build_machine_info(const char *board_id, const char *root_disk_uuid,
                                              const char *product_name, const char *platform_serial,
