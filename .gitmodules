@@ -1,0 +1,3 @@
+[submodule "wrappers/rust/apple_gen"]
+	path = wrappers/rust/apple_gen
+	url = https://github.com/Smoothstep/apple-gen-rs.git
