@@ -13,11 +13,11 @@ Following obfuscated functions will be encapsulated in assembly:
 
 These are the names of the encrypted keys and their counterpart:
 
-Gq3489ugfi: Platform serial number
-Fyp98tpgj: IO Platform UUID
-abKPld1EcMni: MLB
-oycqAZloTNDm: ROM
-kbjfrfpoJU: Boot UUID
+- Gq3489ugfi: Platform serial number
+- Fyp98tpgj: IO Platform UUID
+- abKPld1EcMni: MLB
+- oycqAZloTNDm: ROM
+- kbjfrfpoJU: Boot UUID
 
 Encrypted values for those keys are generated in apple's closed-source XNU kernel bootstrap destructor (finalizer). 
 
