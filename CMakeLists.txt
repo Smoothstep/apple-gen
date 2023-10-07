@@ -22,7 +22,7 @@ else ()
     set(LIB_TYPE STATIC)
 endif ()
 
-if (CMAKE_GENERATOR MATCHES "Visual Studio")
+if (CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC")
     add_library(apple_crypto_asm ${LIB_TYPE} ${ASM_SOURCES})
 
     message("Using Visual Studio (requires Clang / ClangCL)")
@@ -30,32 +30,27 @@ if (CMAKE_GENERATOR MATCHES "Visual Studio")
     # Need to compile asm files due to VS not using clang compiler for it automatically
     set(CMAKE_ASM_COMPILER "clang-cl")
 
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT /NODEFAULTLIB:libcmt")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MT ")
-
-    #set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDebug")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MT")
 
     add_custom_command(
         OUTPUT "imd.obj"
-        COMMAND ${CMAKE_CXX_COMPILER} /c ${CMAKE_SOURCE_DIR}/src/asm/${arch}/imd.s ${CMAKE_SOURCE_DIR}/src/asm/${arch}/encrypt.s
+        COMMAND ${CMAKE_CXX_COMPILER} /c ${CMAKE_SOURCE_DIR}/src/asm/${arch}/imd.s
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         COMMENT "Compiling .s files with Clang"
     )
 
     add_custom_command(
         OUTPUT "encrypt.obj"
-        COMMAND ${CMAKE_CXX_COMPILER} /c ${CMAKE_SOURCE_DIR}/src/asm/${arch}/imd.s ${CMAKE_SOURCE_DIR}/src/asm/${arch}/encrypt.s
+        COMMAND ${CMAKE_CXX_COMPILER} /c ${CMAKE_SOURCE_DIR}/src/asm/${arch}/encrypt.s
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         COMMENT "Compiling .s files with Clang"
     )
 
-    #set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-
-    #target_link_libraries(apple_crypto ${CMAKE_CURRENT_BINARY_DIR}/imd.obj ${CMAKE_CURRENT_BINARY_DIR}/encrypt.obj)
     add_library(apple_crypto ${LIB_TYPE} ${LIBRARY_SOURCES})
+
     target_sources(apple_crypto PRIVATE imd.obj)
     target_sources(apple_crypto PRIVATE encrypt.obj)
-
 else ()
     add_library(apple_crypto ${LIB_TYPE} ${LIBRARY_SOURCES} ${ASM_SOURCES})
 endif()

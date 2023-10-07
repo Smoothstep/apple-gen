@@ -1093,6 +1093,8 @@ extern "C"
     if (!X)                                                                                        \
         return NAC_INVALID_PARAMETER;
 
+#define COPY_PARAM(X, Y) std::memcpy(X, Y, std::min(std::strlen(Y), sizeof(Y)))
+
     EXPORT_CRYPT NacError build_machine_info(const char *board_id, const char *root_disk_uuid,
                                              const char *product_name, const char *platform_serial,
                                              const char *platform_uuid, const char *mlb,
@@ -1110,12 +1112,12 @@ extern "C"
 
         MachineInfo info_result{};
 
-        std::memcpy(info_result.board_id, board_id, std::strlen(board_id));
-        std::memcpy(info_result.product_name, product_name, std::strlen(product_name));
-        std::memcpy(info_result.platform_serial, platform_serial, std::strlen(platform_serial));
-        std::memcpy(info_result.mlb, mlb, std::strlen(mlb));
-        std::memcpy(info_result.root_disk_uuid, root_disk_uuid, std::strlen(root_disk_uuid));
-        std::memcpy(info_result.platform_uuid, platform_uuid, std::strlen(platform_uuid));
+        COPY_PARAM(info_result.board_id, board_id);
+        COPY_PARAM(info_result.product_name, product_name);
+        COPY_PARAM(info_result.platform_serial, platform_serial);
+        COPY_PARAM(info_result.mlb, mlb);
+        COPY_PARAM(info_result.root_disk_uuid, root_disk_uuid);
+        COPY_PARAM(info_result.platform_uuid, platform_uuid);
 
         uint64_t result = encrypt_io_data(platform_serial, std::strlen(platform_serial),
                                           info_result.platform_serial_encrypted);
@@ -1195,21 +1197,6 @@ extern "C"
         CHECK_PARAM(size);
         CHECK_PARAM(output);
 
-        if (!data)
-        {
-            return NAC_INVALID_PARAMETER;
-        }
-
-        if (!size)
-        {
-            return NAC_INVALID_PARAMETER;
-        }
-
-        if (!output)
-        {
-            return NAC_INVALID_PARAMETER;
-        }
-
         uint64_t result = call_external<uint64_t>(&sub_ffffff8000ec7320, data, size, output);
 
         if (result)
@@ -1231,21 +1218,6 @@ extern "C"
         CHECK_PARAM(out_request);
 
         t_reg_context.emplace(machine_info);
-
-        if (!cert)
-        {
-            return NAC_INVALID_PARAMETER;
-        }
-
-        if (!out_context)
-        {
-            return NAC_INVALID_PARAMETER;
-        }
-
-        if (!out_request)
-        {
-            return NAC_INVALID_PARAMETER;
-        }
 
         uint64_t request_len{};
         uint64_t result = call_external<uint64_t>(&sub_b1db0, cert, sizeof(ValidationCert),
